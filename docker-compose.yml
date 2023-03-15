@@ -1,0 +1,43 @@
+version: '2.1'
+services:
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=password
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - './data:/var/lib/mysql'
+    healthcheck:
+      test: 'mysqladmin ping -h localhost -psecret'
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  fpm:
+    build: ./php/
+    expose:
+      - 9000
+    links:
+      - db
+    volumes:
+      - "./www/html/:/var/www/html/"
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build: ./nginx/
+    ports:
+      - 8080:80
+    links:
+      - fpm
+    volumes:
+      - "./www/html/:/var/www/html/"
+    depends_on:
+      fpm:
+        condition: service_started
