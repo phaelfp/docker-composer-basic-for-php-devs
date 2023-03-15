@@ -6,6 +6,7 @@
  - [Docker compose file](#docker-compose-file)
  - [Nginx default configuration file to run your PHP application](#nginx-default-configuration-file-to-run-your-php-application)
  - [Dockerfile for PHP-FPM](#dockerfile-for-php-fpm)
+ - [Run the docker compose](#run-the-docker-compose)
 
 ## Prerequisites
 - Docker runner in Linux or Docker-Desktop with WSL in Windows
@@ -31,6 +32,9 @@ The file is shown below.
 You can change the value of environment variables as per your need.
 
 Remembering that if you change the root password environment variable MYSQL_ROOT_PASSWORD you will also have to change it in line 16 that tests if the database is up
+
+<details><summary>docker-compose.yml</summary>
+<p>
 
 ```yml showLineNumbers
 version: '2.1'
@@ -77,12 +81,16 @@ services:
       fpm:
         condition: service_started
 ```
+</p>
+</details>
 
-T
 
 ## Nginx default configuration file to run your PHP application:
 
 The nginx configuration file is in the path [nginx/default.conf](nginx/default.conf) and is also shown below.
+
+<details><summary>nginx/default.conf</summary>
+<p>
 
 ```nginx showLineNumbers
 server {  
@@ -124,6 +132,9 @@ server {
     } 
 ```
 
+</p>
+</details>
+
 ## Dockerfile for PHP-FPM
 
 The Dockerfile file is in the path [php/Dockerfile](php/Dockerfile) and is also shown below.
@@ -134,3 +145,19 @@ RUN docker-php-ext-install pdo_mysql
 ```
 
 If you need to add other php dependencies please change the dockerfile for your need.
+
+## Run the docker compose
+
+What everyone wanted, how to run containers
+
+To start the services, run the command below to read the output and verify that all services have gone up correctly
+
+```sh
+$ docker composer up
+```
+
+Or to run the services in daemon mode run the command below
+
+```sh  showLineNumbers
+$ docker composer up -d
+```
